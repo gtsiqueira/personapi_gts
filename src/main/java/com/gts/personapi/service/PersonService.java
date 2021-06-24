@@ -3,6 +3,7 @@ package com.gts.personapi.service;
 import com.gts.personapi.dto.request.PersonDTO;
 import com.gts.personapi.dto.response.MessageResponseDTO;
 import com.gts.personapi.entity.Person;
+import com.gts.personapi.exception.PersonNotFoundException;
 import com.gts.personapi.mapper.PersonMapper;
 import com.gts.personapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,12 @@ public class PersonService {
         return allPeople.stream()
                 .map(personMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public PersonDTO findById(Long id) throws PersonNotFoundException {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
+
+        return personMapper.toDTO(person);
     }
 }
